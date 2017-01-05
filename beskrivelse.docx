@@ -1,0 +1,11 @@
+kommunikationen med robotten:
+Master (Robotten) sætter en udgang når den har en request til PC'en - altså en kommando.
+kommandoen indeholdes i et register som computeren læser. 
+commandoen kan være: 
+1: søg efter emnet
+2: Find vinklen på emnet
+3: find fugen når røret roterer
+4: find midten af fugen og find geometrien
+5: initialiser skanner
+
+
