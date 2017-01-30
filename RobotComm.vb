@@ -32,7 +32,7 @@ Module RobotComm
     Private IniHeights As FRRJIf.DataNumReg
     Private Init_X As FRRJIf.DataNumReg
     Private mobjNumReg2 As FRRJIf.DataNumReg
-    Private ScanArea As FRRJIf.DataNumReg
+    Private ScanData As FRRJIf.DataNumReg
     'RND
     Private FanucRegR As FRRJIf.DataNumReg
     Private FanucRegW As FRRJIf.DataNumReg
@@ -70,7 +70,7 @@ Module RobotComm
             mobjPosRegXyzwpr = .AddPosRegXyzwpr(FRRJIf.FRIF_DATA_TYPE.POSREG_XYZWPR, 1, 1, 10)
             FanucRegR = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_INT, 200, 219)
             FanucRegW = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_INT, 220, 239)
-            ScanArea = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 261, 275)
+            ScanData = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 261, 290)
 
         End With
 
@@ -110,6 +110,7 @@ Errhandler:
         Dim recv As Integer
         Dim data As Byte() = New Byte(1023) {}
 
+ 
 
         While True
             'Dim ip As IPAddress = IPAddress.Parse(Plc_Ip)
@@ -147,6 +148,10 @@ Errhandler:
             client.Close()
             newsock.[Stop]()
         End While
+
+
+
+
     End Sub
 
 
@@ -524,11 +529,11 @@ Errhandler:
 
     End Sub
 
-    Public Sub SetScanArea(ByVal RegNr As Integer, ByVal Value As Single)
+    Public Sub SetScanData(ByVal RegNr As Integer, ByVal Value As Single)
         Dim RealValue(0) As Single
         RealValue(0) = Value
 
-        If ScanArea.SetValues((RegNr + 260), RealValue, 1) = False Then
+        If ScanData.SetValues((RegNr + 260), RealValue, 1) = False Then
             Form1.Error_Lbl.Text = "Fejl i SetRealReg (13016)"
             disconnect()
             Exit Sub

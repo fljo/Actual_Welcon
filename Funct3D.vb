@@ -30,6 +30,21 @@ Module Funct3D
 
 
 
+    Public Sub LaserPower(ByVal State As String)
+
+        Dim LaserPow As Integer
+        Dim result As Integer
+
+        If State = "ON" Then
+            LaserPow = 1
+        Else
+            LaserPow = 0
+        End If
+
+        result = ScannerIF.s_SetFeature(DllPointer, ScannerIF.FEATURE_FUNCTION_LASERPOWER, LaserPow)
+
+    End Sub
+
     Public Function InitProc() As Boolean
 
         Dim n_Cnt As Integer = 0

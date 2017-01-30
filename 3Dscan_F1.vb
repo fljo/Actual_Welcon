@@ -23,6 +23,7 @@ Public Class Form1
     Public RobUnInitCnt As Integer = 0
     Const cnstApp As String = "Inrotech Weld"
     Const cnstSection As String = "setting"
+    Public ScanNr As Integer
 
 
 
@@ -106,14 +107,17 @@ Public Class Form1
 
         If StatVal >= 64 Then
             ProcesStat = "Systemet Pauser / Venter!"
+            LaserPower("OFF")
             StatVal = StatVal - 64
         Else
             If StatVal >= 32 Then
                 ProcesStat = "Systemet står med FEJL!"
+                LaserPower("OFF")
                 StatVal = StatVal - 32
             Else
                 If StatVal >= 16 Then
                     ProcesStat = " Lysbue er aktiv"
+                    LaserPower("OFF")
                     StatVal = StatVal - 16
                 End If
             End If
@@ -126,33 +130,43 @@ Public Class Form1
 
             Case (1)
                 ProgramStat = "Bomhøjden kører"
+                LaserPower("ON")
 
             Case (2)
                 ProgramStat = "Vinklen justeres"
+                LaserPower("ON")
 
             Case (3)
                 ProgramStat = "Tårnet positioneres"
+                LaserPower("ON")
 
             Case (4)
                 ProgramStat = "Søger efter fugen"
+                LaserPower("ON")
 
             Case (5)
                 ProgramStat = "Skanner svejsefugen"
+                LaserPower("ON")
 
             Case (6)
                 ProgramStat = "Svejseprogram afvikles"
+                LaserPower("OFF")
+
 
             Case (7)
                 ProgramStat = ""
 
             Case (8)
                 ProgramStat = "Renser Svejsepistol"
+                LaserPower("OFF")
 
             Case (9)
                 ProgramStat = "Checker fugen med skanner"
+                LaserPower("ON")
 
             Case (10)
                 ProgramStat = "Svejsefugen Blæses"
+                LaserPower("OFF")
 
         End Select
 
@@ -180,10 +194,10 @@ Public Class Form1
 
             If RobotReady = True Then       ' læser værdierne fra robotten
 
-                'WPQR   WriteRNDRobot() 'check om det returner false, og genstart forbindelse hvis nødvendigt
+                WriteRNDRobot() 'check om det returner false, og genstart forbindelse hvis nødvendigt
 
                 'send data
-                'WPQR   ReadRNDRobot() 'check om det returner false, og genstart forbindelse hvis nødvendigt
+                ReadRNDRobot() 'check om det returner false, og genstart forbindelse hvis nødvendigt
 
                 If OmronConnected Then
                     Lbl_OmronOn.BackColor = Color.Green
@@ -384,8 +398,6 @@ ErrHandler:
         PictureBox1.Image = Nothing
 
         For i = 1 To ValidMeas
-            'x = Int((Laser(LineNr, i).X_Pos / 100) * PicScale) + Pict_X_Offs
-            'y = Int((Laser(LineNr, i).Z_Pos / 100) * PicScale) - Pict_Y_Offs
             x = ((Laser(LineNr, i).X_Pos / 100) * PicScale) + Pict_X_Offs
             y = ((Laser(LineNr, i).Z_Pos / 100) * PicScale) - Pict_Y_Offs
 
@@ -567,7 +579,7 @@ ErrHandler:
 
         If MouseKey = 2 Then
             PicScale = PicScale + ((MouseY1 - yPos) / 20)
-            'ScalePict()
+            ScalePict()
         End If
         ShowScan(Scan_Draw_Mode)
         'DrawLineFct(LineID(1), Color.Green)
@@ -709,18 +721,11 @@ ErrHandler:
         On Error GoTo errhandler
 
 
-        FoundLine(1) = FindLinje(1, Math.Round(ValidMeas * 2 / 3), 1, 0.5, 1)
-        FoundLine(1) = FindEnd(FoundLine(1), -1, 0.2)
-        MakeLine(FoundLine(1), Color.Green)
+        FoundLine(1) = FindLinje(1, Math.Round(ValidMeas * 2 / 3), 1, 1.0, 4, 5, 100)
+        FoundLine(2) = FindLinje(ValidMeas, Math.Round(ValidMeas / 3), -1, 1.0, 4, 5, 100)
 
-        FoundLine(2) = FindLinje(ValidMeas, Math.Round(ValidMeas / 3), -1, 0.5, 1)
-        FoundLine(2) = FindEnd(FoundLine(2), 1, 0.2)
-        MakeLine(FoundLine(2), Color.Green)
-
-
-
-        'FoundLine(1) = LineRegress1(Scan_Draw_Mode, 1, Math.Round(ValidMeas * 2 / 3))
-        'FoundLine(2) = LineRegress1(Scan_Draw_Mode, ValidMeas, Math.Round(ValidMeas / 3))
+        MakeLine(FoundLine(1), Color.Blue)
+        MakeLine(FoundLine(2), Color.Blue)
 
         '------------------------------------------------
         'finder arealet ud fra de fundne kanter og beregner Delta-arealet mellem x-værdierne som så summeres
@@ -732,24 +737,27 @@ ErrHandler:
 
         If AnaType = "full" Then
 
-            FoundLine(3) = FindLinje(FoundLine(1).SlutPkt.Nr + 7, ValidMeas - 100, 1, 0.3, 1)
+            FoundLine(3) = FindLinje(FoundLine(1).SlutPkt.Nr + 0, ValidMeas - 100, 1, 0.3, 1, 15, 40)
             FoundLine(3) = FindEnd(FoundLine(3), -1, 0.1)
+            FoundLine(3).StartPkt = FoundLine(1).SlutPkt
             MakeLine(FoundLine(3), Color.Green)
 
-            FoundLine(4) = FindLinje(FoundLine(2).SlutPkt.Nr - 7, 100, -1, 0.3, 1)
+
+            FoundLine(4) = FindLinje(FoundLine(2).SlutPkt.Nr - 0, 100, -1, 0.3, 1, 15, 40)
             FoundLine(4) = FindEnd(FoundLine(4), 1, 0.1)
+            FoundLine(4).StartPkt = FoundLine(2).SlutPkt
             MakeLine(FoundLine(4), Color.Green)
 
-            FoundLine(5) = FindLinje(FoundLine(3).SlutPkt.Nr, FoundLine(4).SlutPkt.Nr, 1, 0.5, 3)
+
+            FoundLine(5) = FindLinje(FoundLine(3).SlutPkt.Nr, FoundLine(4).SlutPkt.Nr, 1, 0.5, 3, 90, 40)
             FoundLine(5).StartPkt.Z = FoundLine(5).a * FoundLine(5).StartPkt.X + FoundLine(5).b
             FoundLine(5).SlutPkt.Z = FoundLine(5).a * FoundLine(5).SlutPkt.X + FoundLine(5).b
             MakeLine(FoundLine(5), Color.Blue)
 
-            'FoundLine(3) = LineRegress2(Scan_Draw_Mode, FoundLine(1).SlutPkt.Nr + 3, ValidMeas - 100)
-            'FoundLine(4) = LineRegress2(Scan_Draw_Mode, FoundLine(2).SlutPkt.Nr - 3, 100)
-
-
-            FugeWdtVal = FoundLine(1).SlutPkt.X - FoundLine(2).SlutPkt.X
+            FugeBundVinkel = FoundLine(5).Angle
+            Display = Format(FugeBundVinkel, "###.0")
+            Bundvinkel.Text = Display
+             FugeWdtVal = FoundLine(1).SlutPkt.X - FoundLine(2).SlutPkt.X
             FugeHgtVal = FugeWdtVal / 2 / 0.7   ' den forventede fugehøjden ved en vinkel på 70 grader (2x35grader) (0.7 er invTan(35) 
 
             Dim PlotIntersect As Boolean = True
@@ -757,11 +765,7 @@ ErrHandler:
             If FugeHgtVal > 15 Then
 
                 IntersectLines(1) = FoundLine(1).SlutPkt
-
                 IntersectLines(2) = FoundLine(2).SlutPkt
- 
-                'IntersectLines(3).X = ((FoundLine(3).SlutPkt.X - FoundLine(4).SlutPkt.X) / 2) + FoundLine(4).SlutPkt.X
-                'IntersectLines(3).Z = ((FoundLine(3).SlutPkt.Z - FoundLine(4).SlutPkt.Z) / 2) + FoundLine(4).SlutPkt.Z
                 IntersectLines(3) = InterSect(FoundLine(3), FoundLine(4))
                 IntersectLines(3).Nr = FoundLine(3).SlutPkt.Nr
                 If IntersectLines(3).Success = False Then
@@ -784,8 +788,8 @@ ErrHandler:
             FoundLine(3).StartPkt = IntersectLines(1)
             FoundLine(2).SlutPkt = IntersectLines(2)
             FoundLine(4).StartPkt = IntersectLines(2)
-            FoundLine(3).SlutPkt = IntersectLines(3)
-            FoundLine(4).SlutPkt = IntersectLines(3)
+            'FoundLine(3).SlutPkt = IntersectLines(3)
+            'FoundLine(4).SlutPkt = IntersectLines(3)
 
             ' viser koordinater for skæringspunkter på kurven
             Picturebox_Txt(IntersectLines(1).X, IntersectLines(1).Z, 0)
@@ -809,16 +813,15 @@ ErrHandler:
             RobotVal(4).CartPos.Z = -IntersectLines(1).Z + RobotVal(1).CartPos.Z
             RobotVal(4).CartPos.Y = RobotVal(1).CartPos.Y
 
-            Me.MakeLine(FoundLine(1), Color.Red)
+            'Me.MakeLine(FoundLine(1), Color.Red)
+            'Me.MakeLine(FoundLine(3), Color.Red)
 
-            Me.MakeLine(FoundLine(3), Color.Red)
-
-            Me.MakeLine(FoundLine(2), Color.Red)
-            Me.MakeLine(FoundLine(4), Color.Red)
+            'Me.MakeLine(FoundLine(2), Color.Red)
+            'Me.MakeLine(FoundLine(4), Color.Red)
 
 
             Areal_Beregn = TK_Areal(IntersectLines(1), IntersectLines(2), IntersectLines(3))
-            Areal.Text = Str(Areal_Beregn)
+            'Areal.Text = Str(Areal_Beregn)
 
 
             Return (True)
@@ -1071,6 +1074,58 @@ errhandler:
 
 
     Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles Button1.Click
-        UpLoadPict()
+ 
+    End Sub
+
+    Private Sub GetTextfileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GetTextfileToolStripMenuItem.Click
+        If OpenFileDialog1.ShowDialog <> Windows.Forms.DialogResult.Cancel Then
+            'PictureBox1.Image = Image.FromFile(OpenFileDialog1.FileName)
+            FilNavn = OpenFileDialog1.FileName
+
+            Scan_Draw_Mode = 2
+
+            Dim charval As Char
+            Dim lgd As Integer = Len(FilNavn)
+
+            For i = 3 To lgd
+                charval = Strings.Mid(FilNavn, Len(FilNavn) - (i - 1), 1)
+                If charval = " " Then
+                    Row_Cnt = Val(Strings.Mid(FilNavn, Len(FilNavn) - (i - 1), i - 2))
+                    i = i
+                End If
+                If charval = "-" Then
+                    ScanNr = Val(Strings.Mid(FilNavn, Len(FilNavn) - (i + 1), 2))
+                    'TextBox1.Text = Str(ScanNr) + " - " + Str(Row_Cnt)
+                    If ScanNr > 9 Then
+                        'ScanAntal = ScanNr
+                    End If
+                    'NewName = Strings.Left(FilNavn, Len(FilNavn) - (i + 1)) + Str(antal) + ".txt"
+                    i = lgd
+                End If
+            Next
+            'Lbl_StrNo.Text = Str(Row_Cnt)
+            'TextBox3.Text = FilNavn
+            GetTxtFile(2, FilNavn)
+            ' ScalePict()
+            ShowScan(Scan_Draw_Mode)
+
+            Dim tete(2) As LinesFound
+            'tete(1) = LineRegress1(2, 2, ValidMeas)
+            'tete(2) = LineRegress1(2, ValidMeas, 2)
+
+            Analyze_sel.Enabled = True
+            If Analyze = True Then
+                Analyze_Func("full")
+            End If
+        End If
+
+    End Sub
+
+    Private Sub ScannerONToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ScannerONToolStripMenuItem.Click
+        LaserPower("ON")
+    End Sub
+
+    Private Sub ScannerOFFToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ScannerOFFToolStripMenuItem.Click
+        LaserPower("OFF")
     End Sub
 End Class

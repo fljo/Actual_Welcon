@@ -237,6 +237,6 @@
     Public FugeHgtVal As Double
     Public MeasuredArea As Double
     Public MaesArea(3) As Double
-
+    Public FugeBundVinkel As Single
 
 End Module

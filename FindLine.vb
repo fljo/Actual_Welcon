@@ -381,9 +381,7 @@ Start:
         Form1.TextBox3.Text = Str(Form1.TextBox3.Text + 1)
 
 
-
         If ValidMeas > 400 Then
-
 
             ' find midlede værdier for X og Z i begge ender af den skannede linje
             For i = 1 To 21 Step 5
@@ -450,6 +448,7 @@ Start:
 
         ' 1) Søg efter emnet i Z-retningen
         If Command = 1 Then    ' Søg efter emnet i Z-retningen
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Søger efter højden af svøbet!"
             '   ---------------
@@ -496,6 +495,7 @@ Start:
 
         ' 2) find midten af svejsefugen i X-retningen
         If Command = 2 Then
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Søger efter fugemidten!"
 
@@ -552,6 +552,7 @@ Start:
 
         ' 3) Søg efter Starten i -Z-retningen
         If Command = 3 Then
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Søger efter forkanten af svøbet!"
 
@@ -592,6 +593,7 @@ Start:
 
         ' 4) Søg efter enden af svejsningen i Z-retningen
         If Command = 4 Then
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Søger efter bagkanten af svøbet!"
 
@@ -629,6 +631,7 @@ Start:
 
         ' 5) finder 3 punkter og midler
         If Command = 5 Then
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Finder punkter på fugen!"
             ' resetter forskydning og krymp beregningerne
@@ -659,13 +662,16 @@ Start:
                         SetPosRegX(ArealCheck(ScanNummer, 4).Pkt1, 1)            ' gemmer de valgte punkter i registre
                         SetPosRegX(ArealCheck(ScanNummer, 4).Pkt2, 2)
                         SetPosRegX(ArealCheck(ScanNummer, 4).Pkt3, 3)
-                        SetScanArea(ScanNummer, MeasuredArea)
+                        SetScanData(ScanNummer, MeasuredArea)           ' skriv Scanvolumen i register
 
                         ' ----- nedenstående bruges til at finde en forskydning
 
                         Dim TopLines(2) As LinesFound
-                        TopLines(1) = LineRegress1(1, 2, ValidMeas)         ' vi finder X-værdierne for svejsefugen
-                        TopLines(2) = LineRegress1(1, ValidMeas, 2)         ' fra begge sider
+                        TopLines(1) = FindLinje(1, Math.Round(ValidMeas * 2 / 3), 1, 1.0, 4, 5, 100)
+                        TopLines(2) = FindLinje(ValidMeas, Math.Round(ValidMeas / 3), -1, 1.0, 4, 5, 100)
+
+                        'TopLines(1) = LineRegress1(1, 2, ValidMeas)         ' vi finder X-værdierne for svejsefugen
+                        'TopLines(2) = LineRegress1(1, ValidMeas, 2)         ' fra begge sider
 
                         SetInit_X(399 + (ScanNummer * 2), TopLines(1).SlutPkt.X)                ' gemmer værdierne i nogle registre så vi kan genstarte programmet uden problemer
                         SetInit_X(400 + (ScanNummer * 2), TopLines(2).SlutPkt.X)                ' x-værdierne for fugen gemmes i registre til efterfølgende sammenligning
@@ -770,6 +776,7 @@ Start:
         ' 6) beregn vinklen af emnet
 
         If Command = 6 Then
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Finder vinklen af emnet!"
 
@@ -786,6 +793,7 @@ Start:
         ' 7) Søg efter svejsefugen ved rotation
 
         If Command = 7 Then
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Søger fugen under rotation!"
             '   ---------------
@@ -803,6 +811,7 @@ Start:
 
         ' 8) angiv højden fra skanneren ned til røret - bruges til positionering af bommen
         If Command = 8 Then
+            LaserPower("ON")
 
 
             Form1.ScannerStatus.Text = "Viser højden ved bomplacering!"
@@ -825,6 +834,7 @@ Start:
 
         ' 9) flyt tårnet til midten af svøbet
         If Command = 9 Then
+            LaserPower("ON")
 
             Form1.ScannerStatus.Text = "Placerer tårnet!"
 
@@ -840,6 +850,7 @@ Start:
 
         ' 10) find svejsepunkter
         If Command = 10 Then
+            LaserPower("ON")
             '   ---------------
             Form1.ScannerStatus.Text = "Skanner svejsepunkt til fil!"
 
@@ -857,6 +868,7 @@ Start:
 
         ' 11) find svejsepunkter
         If Command = 11 Then
+            LaserPower("ON")
             Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
 
             Form1.Analyze_Func("full")
@@ -864,7 +876,8 @@ Start:
             SetPosRegX(RobotVal(2).CartPos, 1)
             SetPosRegX(RobotVal(3).CartPos, 2)
             SetPosRegX(RobotVal(4).CartPos, 3)
-            SetScanArea(ScanNummer, MeasuredArea)
+            SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
+            SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
 
             ScanID.Task = 2
             ScanID.Motion_Dir = 0
@@ -876,6 +889,7 @@ Start:
 
         ' 12) Tjek positionsoffset for svejsepunktet (fra f.eks. synkning af fugen)
         If Command = 12 Then
+            LaserPower("ON")
             Form1.ScannerStatus.Text = "Checker positionsoffset!"
 
             delay(500)
@@ -886,7 +900,7 @@ Start:
 
             XZ_Offset(ScanNummer, StrengNummer)
             If Form1.Analyze_Func("top") = True Then
-                SetScanArea(ScanNummer, MeasuredArea)
+                SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
             End If
 
 
@@ -903,6 +917,7 @@ Start:
 
         ' 13) find svejsepunkter
         If Command = 13 Then
+            LaserPower("ON")
             Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
 
             Form1.Analyze_Func("full")
@@ -910,7 +925,8 @@ Start:
             SetPosRegX(RobotVal(2).CartPos, 1)
             SetPosRegX(RobotVal(3).CartPos, 2)
             SetPosRegX(RobotVal(4).CartPos, 3)
-            SetScanArea(ScanNummer, MeasuredArea)
+            SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
+            SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
 
             ScanID.Task = 2
             ScanID.Motion_Dir = 0
@@ -923,6 +939,7 @@ Start:
         ' 14) find svejsepunkter
         If Command = 14 Then
 
+            LaserPower("ON")
             Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
 
             If Form1.Analyze_Func("top") = True Then
@@ -930,7 +947,7 @@ Start:
                 SetPosRegX(RobotVal(2).CartPos, 1)
                 SetPosRegX(RobotVal(3).CartPos, 2)
                 SetPosRegX(RobotVal(4).CartPos, 3)
-                'SetScanArea(ScanNummer, MeasuredArea)
+                'SetScanData(ScanNummer, MeasuredArea)
             End If
 
             If ValidMeas > 400 Then
@@ -1067,6 +1084,7 @@ Start:
 
         ' 16) finder fugen ved hurtig rotation ved at kigge på linjevinklen
         If Command = 16 Then
+            LaserPower("ON")
             Dim FugeMidte As Double = AngleChk()
             SetRealReg(11, FugeMidte)
 
@@ -1140,12 +1158,14 @@ errhandler:
         'finder linjerne først fra den ene side
         Dim StartNo As Integer = 20
         Dim SlutNo As Integer = ValidMeas - 20
-        TopLines(1) = LineRegress1(1, StartNo, SlutNo)
+        'TopLines(1) = LineRegress1(1, StartNo, SlutNo)
+        TopLines(1) = FindLinje(1, Math.Round(ValidMeas * 2 / 3), 1, 1.0, 4, 5, 100)
 
         ' ....  så fra den anden side
         StartNo = ValidMeas - 20
         SlutNo = 20
-        TopLines(2) = LineRegress1(1, StartNo, SlutNo)
+        'TopLines(2) = LineRegress1(1, StartNo, SlutNo)
+        TopLines(2) = FindLinje(ValidMeas, Math.Round(ValidMeas / 3), -1, 1.0, 4, 5, 100)
         '------------
 
         '        XOffs_Arr(n, m)  m 1 og 2 er de aktuelle X-værdier, 3 og 4 er de oprindelige X-værdier, 5 er forskydningen, 6 er krymp

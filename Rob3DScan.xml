@@ -1,0 +1,32 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Rob3DScan
+</name>
+</assembly>
+<members>
+<member name="M:Rob3DScan.datahandler.UploadFile(System.String,System.String,System.String,System.String)">
+	<summary>
+ Methods to upload file to FTP Server
+ </summary>
+	<param name="_FileName">local source file name</param>
+	<param name="_UploadPath">Upload FTP path including Host name</param>
+	<param name="_FTPUser">FTP login username</param>
+	<param name="_FTPPass">FTP login password</param>
+</member><member name="P:Rob3DScan.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:Rob3DScan.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:Rob3DScan.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+</members>
+</doc>

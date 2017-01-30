@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "3Dscan_Vfuge_180gr", "3Dscan_Vfuge_180gr.vbproj", "{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Debug|Any CPU.Build.0 = Debug|x86
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Debug|x86.ActiveCfg = Debug|x86
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Debug|x86.Build.0 = Debug|x86
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Release|x86.ActiveCfg = Release|x86
+		{1AE7C3E5-3CC8-452D-A0FE-E0BE6EE6BAEA}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

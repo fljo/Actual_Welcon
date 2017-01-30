@@ -138,7 +138,11 @@ public Module  datahandler
 
 
 
-    Public Sub GetTxtFile(ByVal LineNr As Integer, ByVal Name As String)
+    Public Function GetTxtFile(ByVal LineNr As Integer, ByVal Name As String) As Boolean
+        Dim PosStr(3) As String
+
+        GetTxtFile = False
+        'Form1.TextBox4.Text = Name
 
         Using MyReader As New Microsoft.VisualBasic.
                       FileIO.TextFieldParser(
@@ -150,15 +154,38 @@ public Module  datahandler
             While Not MyReader.EndOfData
                 Try
                     currentRow = MyReader.ReadFields()
+                    Dim LastLine As Boolean = MyReader.EndOfData
 
-                    Laser(LineNr, currentRow(0)).X_Pos = currentRow(1) * 100
-                    Laser(LineNr, currentRow(0)).Z_Pos = currentRow(2) * 100
-                    Laser(LineNr, currentRow(0)).PixWidth = currentRow(3)
-                    Laser(LineNr, currentRow(0)).PixHeight = currentRow(4)
-                    Laser(LineNr, currentRow(0)).Threshold = currentRow(5)
-                    Laser(LineNr, currentRow(0)).Moment_0 = currentRow(6)
-                    Laser(LineNr, currentRow(0)).Moment_1 = currentRow(6)
-                    ValidMeas = currentRow(0) - 1
+                    If LastLine = False Then
+                        Laser(LineNr, currentRow(0)).X_Pos = Val(currentRow(1)) * 100
+                        Laser(LineNr, currentRow(0)).Z_Pos = Val(currentRow(2)) * 100
+
+                        Laser(LineNr, currentRow(0)).PixWidth = currentRow(3)
+                        Laser(LineNr, currentRow(0)).PixHeight = currentRow(4)
+                        Laser(LineNr, currentRow(0)).Threshold = currentRow(5)
+                        Laser(LineNr, currentRow(0)).Moment_0 = currentRow(6)
+                        Laser(LineNr, currentRow(0)).Moment_1 = currentRow(6)
+                        ValidMeas = currentRow(0) - 1
+                    Else
+                        'Dim cult As String = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator
+                        'If cult = "," Then
+                        PosStr(1) = currentRow(1)
+                        PosStr(2) = currentRow(2)
+                        PosStr(3) = currentRow(3)
+
+                        PosStr(1) = PosStr(1).Replace(".", ",")
+                        PosStr(2) = PosStr(2).Replace(".", ",")
+                        PosStr(3) = PosStr(3).Replace(".", ",")
+
+                        'Laser(LineNr, currentRow(0)).X_Pos = Val(currentRow(1)) * 100
+                        'Laser(LineNr, currentRow(0)).Z_Pos = Val(currentRow(2)) * 100
+
+                        'Else
+                        'Laser(LineNr, currentRow(0)).X_Pos = Val(currentRow(1)) * 100
+                        'Laser(LineNr, currentRow(0)).Z_Pos = Val(currentRow(2)) * 100
+                        'End If
+                    End If
+
                 Catch ex As Microsoft.VisualBasic.
                             FileIO.MalformedLineException
                     MsgBox("Line " & ex.Message &
@@ -166,10 +193,19 @@ public Module  datahandler
                 End Try
 
             End While
-
+            GetTxtFile = True
         End Using
+        'Form1.TextBox4.Text = "true - " + Str(ValidMeas) + "   -- " + Str(LineNr)
+        'Dim X, Y, Z As Double
+        'X = Laser(LineNr, ValidMeas + 1).X_Pos / 100
+        'Y = Laser(LineNr, ValidMeas + 1).PixWidth / 10
+        'Z = Laser(LineNr, ValidMeas + 1).Z_Pos / 100
 
-    End Sub
+        Dim Seperator As String = "  -  "
+        'ScanViewer.PosCoord.Text = "X: " + PosStr(1) + Seperator + "Y: " + PosStr(2) + Seperator + "Z: " + PosStr(3)
+
+        ValidMeas = ValidMeas
+    End Function
 
 
     ' Beregner arealet 
