@@ -16,8 +16,8 @@
         'Form1.TextBox8.Text = ""
 
         For i = 1 To ValidMeas
-            X1 = Laser(Scan_Draw_Mode, i).X_Pos / 100
-            Z1 = Laser(Scan_Draw_Mode, i).Z_Pos / 100
+            X1 = Laser(i).X_Pos / 100
+            Z1 = Laser(i).Z_Pos / 100
             If X2 = 0 Then X2 = X1
             If (Math.Abs(X1 - X2) > 1) Then
                 X2 = X2
@@ -50,7 +50,7 @@
                 End If
             End If
 
-            Z3 = Math.Abs((Line.b * Laser(Scan_Draw_Mode, i).X_Pos) + Line.a)
+            Z3 = Math.Abs((Line.b * Laser(i).X_Pos) + Line.a)
 
         Next
 

@@ -56,6 +56,7 @@ Public Class Form1
         Analyze_sel.Enabled = True
         MainLoop_Active = True
         Scan_Draw_Mode = 1
+        Fejlskan = 0        ' fejlskan counter der holder øje med hvor mange skan der har være unsuccesful
 
         CommTimer.Interval = 1000
         Start1.Visible = False
@@ -367,11 +368,11 @@ ErrHandler:
         Dim Max_Y As Integer = 0
 
         For i = 1 To ValidMeas   '1279
-            If Laser(Scan_Draw_Mode, i).Z_Pos > 100 Then
-                x = (Laser(Scan_Draw_Mode, i).X_Pos / 100)
-                y = (Laser(Scan_Draw_Mode, i).Z_Pos / 100)
-                x = Int((Laser(Scan_Draw_Mode, i).X_Pos / 100) * PicScale) + Pict_X_Offs
-                y = Int((Laser(Scan_Draw_Mode, i).Z_Pos / 100) * PicScale) '- Pict_Y_Offs
+            If Laser(i).Z_Pos > 100 Then
+                x = (Laser(i).X_Pos / 100)
+                y = (Laser(i).Z_Pos / 100)
+                x = Int((Laser(i).X_Pos / 100) * PicScale) + Pict_X_Offs
+                y = Int((Laser(i).Z_Pos / 100) * PicScale) '- Pict_Y_Offs
                 If x < Min_X Then Min_X = x
                 If x > Max_X Then Max_X = x
                 If y < Min_Y Then Min_Y = y
@@ -398,8 +399,8 @@ ErrHandler:
         PictureBox1.Image = Nothing
 
         For i = 1 To ValidMeas
-            x = ((Laser(LineNr, i).X_Pos / 100) * PicScale) + Pict_X_Offs
-            y = ((Laser(LineNr, i).Z_Pos / 100) * PicScale) - Pict_Y_Offs
+            x = ((Laser(i).X_Pos / 100) * PicScale) + Pict_X_Offs
+            y = ((Laser(i).Z_Pos / 100) * PicScale) - Pict_Y_Offs
 
             ' skal fjernes
             If x < Min_X Then Min_X = x
@@ -417,7 +418,7 @@ ErrHandler:
                 If checkbox2.Checked = True Then
                     x = PictWidth - x
                 End If
-                If Laser(LineNr, i).PixWidth > 12 Then
+                If Laser(i).PixWidth > 12 Then
                     bmap.SetPixel(x, y, Color.Red)
                 Else
                     bmap.SetPixel(x, y, Color.Black)
@@ -446,8 +447,8 @@ ErrHandler:
         PictureBox1.Image = Nothing
 
         For i = 1 To ValidMeas
-            x = Int((Laser(2, i).X_Pos / 100) * PicScale) + Pict_X_Offs
-            y = Int((Laser(2, i).Z_Pos / 100) * PicScale) - Pict_Y_Offs
+            x = Int((Laser(i).X_Pos / 100) * PicScale) + Pict_X_Offs
+            y = Int((Laser(i).Z_Pos / 100) * PicScale) - Pict_Y_Offs
             ' skal fjernes
             If x < Min_X Then Min_X = x
             If x > Max_X Then Max_X = x
@@ -464,7 +465,7 @@ ErrHandler:
                 If checkbox2.Checked = True Then
                     x = PictWidth - x
                 End If
-                If Laser(2, i).PixWidth > 12 Then
+                If Laser(i).PixWidth > 12 Then
                     bmap.SetPixel(x, y, Color.Red)
                 Else
                     bmap.SetPixel(x, y, Color.Black)
@@ -534,8 +535,8 @@ ErrHandler:
 
         MouseX1 = e.X
         MouseY1 = e.Y
-        x = Int((Laser(Scan_Draw_Mode, n).X_Pos / 100) * PicScale) + Pict_X_Offs
-        y = Int((Laser(Scan_Draw_Mode, n).Z_Pos / 100) * PicScale) - Pict_Y_Offs
+        x = Int((Laser(n).X_Pos / 100) * PicScale) + Pict_X_Offs
+        y = Int((Laser(n).Z_Pos / 100) * PicScale) - Pict_Y_Offs
 
         'Label3.Text = Str(MouseX1) + "  ,  " + Str(MouseY1)
 
@@ -788,8 +789,8 @@ ErrHandler:
             FoundLine(3).StartPkt = IntersectLines(1)
             FoundLine(2).SlutPkt = IntersectLines(2)
             FoundLine(4).StartPkt = IntersectLines(2)
-            'FoundLine(3).SlutPkt = IntersectLines(3)
-            'FoundLine(4).SlutPkt = IntersectLines(3)
+            FoundLine(3).SlutPkt = IntersectLines(3)
+            FoundLine(4).SlutPkt = IntersectLines(3)
 
             ' viser koordinater for skæringspunkter på kurven
             Picturebox_Txt(IntersectLines(1).X, IntersectLines(1).Z, 0)
@@ -823,7 +824,7 @@ ErrHandler:
             Areal_Beregn = TK_Areal(IntersectLines(1), IntersectLines(2), IntersectLines(3))
             'Areal.Text = Str(Areal_Beregn)
 
-
+            Scan_Chk()
             Return (True)
         Else
 
@@ -854,7 +855,7 @@ ErrHandler:
             RobotVal(4).CartPos.X = IntersectLines(1).X + RobotVal(1).CartPos.X
             RobotVal(4).CartPos.Z = -IntersectLines(1).Z + RobotVal(1).CartPos.Z
             RobotVal(4).CartPos.Y = RobotVal(1).CartPos.Y
-
+            Scan_Chk()
             Return (True)
         End If
 
@@ -971,14 +972,7 @@ errhandler:
 
     End Sub
 
-    Private Sub MakeBINFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MakeBINFileToolStripMenuItem.Click
-        skrivBinfil2()
-    End Sub
-
-    ' *******************  Læs tekstfil  ***********************
-
-
-
+  
 
     Private Sub Start1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Start1.Click
         Initialize_System()
@@ -1028,16 +1022,14 @@ errhandler:
 
         Dim FilePath As String = Application.StartupPath
 
-
-        'WPQR
-        Return
-
-
-        bmap.Save(IO.Path.Combine(FilePath, "Screenimg.bmp"), Imaging.ImageFormat.Bmp)
-        PictureBox1.Image.Save(IO.Path.Combine(Application.StartupPath, "Screenimg.bmp"), Imaging.ImageFormat.Bmp)
+        'bmap.Save(IO.Path.Combine(FilePath, "Screenimg.bmp"), Imaging.ImageFormat.Bmp)
+        'PictureBox1.Image.Save(IO.Path.Combine(Application.StartupPath, "Screenimg.bmp"), Imaging.ImageFormat.Bmp)
+        bmap.Save(IO.Path.Combine(FilePath, "Screenimg.jpg"), Imaging.ImageFormat.Jpeg)
+        PictureBox1.Image.Save(IO.Path.Combine(Application.StartupPath, "Screenimg.jpg"), Imaging.ImageFormat.Jpeg)
 
         ' Upload file using FTP
-        Dim FilNavn1 As String = FilePath + "\" + "Screenimg.bmp"
+        'Dim FilNavn1 As String = FilePath + "\" + "Screenimg.bmp"
+        Dim FilNavn1 As String = FilePath + "\" + "Screenimg.jpg"
         Dim UserName As String = "FTP"
         Dim PassWord As String = "Welcon"
 
@@ -1050,7 +1042,8 @@ errhandler:
         Ip_Str(3) = IP_Array(0, 1)
         Ip_Str(4) = IP_Array(0, 0) - 7
 
-        Dim FTP_Str As String = "ftp://" + Ip_Str(1) + "." + Ip_Str(2) + "." + Ip_Str(3) + "." + Ip_Str(4) + "./Screenimg.bmp"
+        'Dim FTP_Str As String = "ftp://" + Ip_Str(1) + "." + Ip_Str(2) + "." + Ip_Str(3) + "." + Ip_Str(4) + "./Screenimg.bmp"
+        Dim FTP_Str As String = "ftp://" + Ip_Str(1) + "." + Ip_Str(2) + "." + Ip_Str(3) + "." + Ip_Str(4) + "./Screenimg.jpg"
 
 
         UploadFile(FilNavn1, FTP_Str, UserName, PassWord)
@@ -1074,7 +1067,7 @@ errhandler:
 
 
     Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles Button1.Click
- 
+        UpLoadPict()
     End Sub
 
     Private Sub GetTextfileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GetTextfileToolStripMenuItem.Click
@@ -1109,9 +1102,6 @@ errhandler:
             ' ScalePict()
             ShowScan(Scan_Draw_Mode)
 
-            Dim tete(2) As LinesFound
-            'tete(1) = LineRegress1(2, 2, ValidMeas)
-            'tete(2) = LineRegress1(2, ValidMeas, 2)
 
             Analyze_sel.Enabled = True
             If Analyze = True Then

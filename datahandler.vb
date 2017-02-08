@@ -53,10 +53,10 @@ public Module  datahandler
         Dim Slut As Double = 0
 
         For i = 51 To ValidMeas Step 10
-            X1 = Laser(1, i).X_Pos / 100
-            X2 = Laser(1, i - 50).X_Pos / 100
-            Z1 = Laser(1, i).Z_Pos / 100
-            Z2 = Laser(1, i - 50).Z_Pos / 100
+            X1 = Laser(i).X_Pos / 100
+            X2 = Laser(i - 50).X_Pos / 100
+            Z1 = Laser(i).Z_Pos / 100
+            Z2 = Laser(i - 50).Z_Pos / 100
             a1 = Abs((Z2 - Z1) / (X2 - X1))
             ang1 = Atan(a1) * 180 / Math.PI
 
@@ -100,13 +100,13 @@ public Module  datahandler
 
         For i = 0 To ValidMeas
             LineCnt = i
-            x1 = Laser(ActLine, i).X_Pos / 100
-            Z1 = Laser(ActLine, i).Z_Pos / 100
-            PixWdt = Laser(ActLine, i).PixWidth
-            PixHgt = Laser(ActLine, i).PixHeight
-            ThrsHld = Laser(ActLine, i).Threshold
-            M0 = Laser(ActLine, i).Moment_0
-            M1 = Laser(ActLine, i).Moment_1
+            x1 = Laser(i).X_Pos / 100
+            Z1 = Laser(i).Z_Pos / 100
+            PixWdt = Laser(i).PixWidth
+            PixHgt = Laser(i).PixHeight
+            ThrsHld = Laser(i).Threshold
+            M0 = Laser(i).Moment_0
+            M1 = Laser(i).Moment_1
 
             content = Str(i) + "; " + Str(x1) + "; " + Str(Z1) + "; " + Str(PixHgt) + "; " + Str(PixWdt) + "; " + Str(ThrsHld) + "; " + Str(M0) + "; " + Str(M1)
             objWriter.WriteLine(content)
@@ -118,23 +118,6 @@ public Module  datahandler
 
 
     End Sub
-
-    Public Sub skrivBinfil2()
-
-        Dim fStream As New FileStream("c:\data\byteArray.dat", FileMode.Create)
-
-        Dim bw As New BinaryWriter(fStream)
-
-
-        bw.Write(ProfileBuffer)
-
-        bw.Close()
-
-        fStream.Close()
-
-
-    End Sub
-
 
 
 
@@ -157,14 +140,14 @@ public Module  datahandler
                     Dim LastLine As Boolean = MyReader.EndOfData
 
                     If LastLine = False Then
-                        Laser(LineNr, currentRow(0)).X_Pos = Val(currentRow(1)) * 100
-                        Laser(LineNr, currentRow(0)).Z_Pos = Val(currentRow(2)) * 100
+                        Laser(currentRow(0)).X_Pos = Val(currentRow(1)) * 100
+                        Laser(currentRow(0)).Z_Pos = Val(currentRow(2)) * 100
 
-                        Laser(LineNr, currentRow(0)).PixWidth = currentRow(3)
-                        Laser(LineNr, currentRow(0)).PixHeight = currentRow(4)
-                        Laser(LineNr, currentRow(0)).Threshold = currentRow(5)
-                        Laser(LineNr, currentRow(0)).Moment_0 = currentRow(6)
-                        Laser(LineNr, currentRow(0)).Moment_1 = currentRow(6)
+                        Laser(currentRow(0)).PixWidth = currentRow(3)
+                        Laser(currentRow(0)).PixHeight = currentRow(4)
+                        Laser(currentRow(0)).Threshold = currentRow(5)
+                        Laser(currentRow(0)).Moment_0 = currentRow(6)
+                        Laser(currentRow(0)).Moment_1 = currentRow(6)
                         ValidMeas = currentRow(0) - 1
                     Else
                         'Dim cult As String = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator
@@ -221,8 +204,8 @@ public Module  datahandler
         Line.b = Pkt_2.Z - (Line.a * Pkt_2.X)
 
         For i = Pkt_2.Nr To Pkt_1.Nr Step -1
-            X1 = Laser(Scan_Draw_Mode, i).X_Pos / 100
-            Z1 = Laser(Scan_Draw_Mode, i).Z_Pos / 100
+            X1 = Laser(i).X_Pos / 100
+            Z1 = Laser(i).Z_Pos / 100
             If X2 = 0 Then X2 = X1
             If (Math.Abs(X1 - X2) > 1) Then
                 X2 = X2

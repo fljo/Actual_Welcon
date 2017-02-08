@@ -125,7 +125,7 @@
 
     Public Ana_Ang(1280) As Angles_found
     ' Public LineID(10) As LinesFound      ' oplysninger om de fundne rette linier (vinkel, start, slut, ligning)
-    Public Laser(1000, 1280) As LaserVal
+    Public Laser(1280) As LaserVal
     Public LineVal(4) As LineFunc  'FoundPoint
     Public chkval As Boolean
     Public ArealCheck(15, 4) As ScanAry    ' array med de beregnede arealer for skanningerne
@@ -238,5 +238,5 @@
     Public MeasuredArea As Double
     Public MaesArea(3) As Double
     Public FugeBundVinkel As Single
-
+    Public Fejlskan As Integer
 End Module

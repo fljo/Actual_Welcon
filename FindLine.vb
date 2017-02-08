@@ -64,8 +64,8 @@ Start:
 
         For i = StartNo To SlutNo Step Sign
             n = n + 1
-            X_Act = Laser(LineNr, i).X_Pos / 100
-            Z_Act = Laser(LineNr, i).Z_Pos / 100
+            X_Act = Laser(i).X_Pos / 100
+            Z_Act = Laser(i).Z_Pos / 100
 
             If n <= MinLineLgt Then
                 ' her findes udgangsliningen for den videre analyse af den rette linje og hvornår den slutter
@@ -148,7 +148,7 @@ Start:
                     If EOL_Cnt > 20 Then
                         ' hvis der er meget reflektion, så kan der findes en forkert linjeafslutning ved en kort linje. det klares ved at forøge den tilladelige fejl
                         Dim cntchk As Integer = i + (20 * Sign)
-                        Dim chkval As Double = Abs(Laser(LineNr, cntchk).Z_Pos / 100 - Z_Act)
+                        Dim chkval As Double = Abs(Laser(cntchk).Z_Pos / 100 - Z_Act)
                         If chkval < 0.5 Then
                             'StartNo = i
                             If MaxTillError < 0.6 Then
@@ -160,12 +160,12 @@ Start:
                         LineRegress1.a = b1
                         LineRegress1.b = b0
                         LineRegress1.SlutPkt.Nr = Sel_Point
-                        LineRegress1.SlutPkt.X = Laser(LineNr, Sel_Point).X_Pos / 100
+                        LineRegress1.SlutPkt.X = Laser(Sel_Point).X_Pos / 100
                         LineRegress1.SlutPkt.Z = (b1 * LineRegress1.SlutPkt.X + b0)
                         LineRegress1.SlutPkt.Success = True
 
                         LineRegress1.StartPkt.Nr = StartNo
-                        LineRegress1.StartPkt.X = Laser(LineNr, StartNo).X_Pos / 100
+                        LineRegress1.StartPkt.X = Laser(StartNo).X_Pos / 100
                         LineRegress1.StartPkt.Z = (b1 * LineRegress1.StartPkt.X + b0)
                         LineRegress1.Angle = Atan(b1) * 180 / Math.PI
                         LineRegress1.StartPkt.Success = True
@@ -228,8 +228,8 @@ Start:
 
         For i = StartNo To SlutNo Step Sign
             n = n + 1
-            X_Act = Laser(LineNr, i).X_Pos / 100
-            Z_Act = Laser(LineNr, i).Z_Pos / 100
+            X_Act = Laser(i).X_Pos / 100
+            Z_Act = Laser(i).Z_Pos / 100
 
             If n <= 20 Then
 
@@ -301,11 +301,11 @@ Start:
                         LineRegress2.a = b1
                         LineRegress2.b = b0
                         LineRegress2.SlutPkt.Nr = Sel_Point
-                        LineRegress2.SlutPkt.X = Laser(LineNr, Sel_Point).X_Pos / 100
+                        LineRegress2.SlutPkt.X = Laser(Sel_Point).X_Pos / 100
                         LineRegress2.SlutPkt.Z = (b1 * LineRegress2.SlutPkt.X + b0)
 
                         LineRegress2.StartPkt.Nr = StartNo
-                        LineRegress2.StartPkt.X = Laser(LineNr, StartNo).X_Pos / 100
+                        LineRegress2.StartPkt.X = Laser(StartNo).X_Pos / 100
                         LineRegress2.StartPkt.Z = (b1 * LineRegress2.StartPkt.X + b0)
                         LineRegress2.Angle = Atan(b1) * 180 / Math.PI
                         'Form1.MakeLine(LineRegress2, Color.Green)
@@ -319,11 +319,11 @@ Start:
         LineRegress2.a = b1
         LineRegress2.b = b0
         LineRegress2.SlutPkt.Nr = Sel_Point
-        LineRegress2.SlutPkt.X = Laser(LineNr, Sel_Point).X_Pos / 100
+        LineRegress2.SlutPkt.X = Laser(Sel_Point).X_Pos / 100
         LineRegress2.SlutPkt.Z = (b1 * LineRegress2.SlutPkt.X + b0)
 
         LineRegress2.StartPkt.Nr = StartNo
-        LineRegress2.StartPkt.X = Laser(LineNr, StartNo).X_Pos / 100
+        LineRegress2.StartPkt.X = Laser(StartNo).X_Pos / 100
         LineRegress2.StartPkt.Z = (b1 * LineRegress2.StartPkt.X + b0)
         'Form1.MakeLine(LineRegress2, Color.Green)
         'objWriter1.Close()
@@ -378,6 +378,7 @@ Start:
         Dim StrengNummer As Integer = RobotVal(2).NumRegInt     ' funktionen kaldes med streng nummeret (svejsestrengens nummer) i register 2
         Dim errVal As Integer = 0
 
+
         Form1.TextBox3.Text = Str(Form1.TextBox3.Text + 1)
 
 
@@ -385,10 +386,10 @@ Start:
 
             ' find midlede værdier for X og Z i begge ender af den skannede linje
             For i = 1 To 21 Step 5
-                X_Sum = X_Sum + Laser(ActLine, i).X_Pos
-                Z_Sum = Z_Sum + Laser(ActLine, i).Z_Pos
-                X_Chk = X_Chk + Laser(ActLine, i + 100).X_Pos
-                Z_Chk = Z_Chk + Laser(ActLine, i + 100).Z_Pos
+                X_Sum = X_Sum + Laser(i).X_Pos
+                Z_Sum = Z_Sum + Laser(i).Z_Pos
+                X_Chk = X_Chk + Laser(i + 100).X_Pos
+                Z_Chk = Z_Chk + Laser(i + 100).Z_Pos
             Next
             ' startpunkt som er fundet ved at midle 5 værdier i starten
             ID_Point(1).X = X_Sum / 5 / 100
@@ -404,10 +405,10 @@ Start:
             Z_Chk = 0
 
             For i = ValidMeas - 1 To (ValidMeas - 22) Step -5
-                X_Sum = X_Sum + Laser(ActLine, i).X_Pos
-                Z_Sum = Z_Sum + Laser(ActLine, i).Z_Pos
-                X_Chk = X_Chk + Laser(ActLine, i - 100).X_Pos
-                Z_Chk = Z_Chk + Laser(ActLine, i - 100).Z_Pos
+                X_Sum = X_Sum + Laser(i).X_Pos
+                Z_Sum = Z_Sum + Laser(i).Z_Pos
+                X_Chk = X_Chk + Laser(i - 100).X_Pos
+                Z_Chk = Z_Chk + Laser(i - 100).Z_Pos
             Next
             ' slutpunkt som er fundet ved at midle 5 værdier i enden
             ID_Point(3).X = X_Sum / 5 / 100
@@ -421,8 +422,8 @@ Start:
             Z_Sum = 0
 
             For i = ((ValidMeas / 2) - 11) To ((ValidMeas / 2) + 11) Step 5
-                X_Sum = X_Sum + Laser(ActLine, i).X_Pos
-                Z_Sum = Z_Sum + Laser(ActLine, i).Z_Pos
+                X_Sum = X_Sum + Laser(i).X_Pos
+                Z_Sum = Z_Sum + Laser(i).Z_Pos
             Next
             ' slutpunkt som er fundet ved at midle 5 værdier i enden
             ID_Point(5).X = X_Sum / 5 / 100
@@ -676,7 +677,7 @@ Start:
                         SetInit_X(399 + (ScanNummer * 2), TopLines(1).SlutPkt.X)                ' gemmer værdierne i nogle registre så vi kan genstarte programmet uden problemer
                         SetInit_X(400 + (ScanNummer * 2), TopLines(2).SlutPkt.X)                ' x-værdierne for fugen gemmes i registre til efterfølgende sammenligning
 
-                        SetIniHeights((ScanNummer + 370), Laser(ActLine, 100).Z_Pos / 100)      ' gemmer højden i andre registre
+                        SetIniHeights((ScanNummer + 370), Laser(100).Z_Pos / 100)      ' gemmer højden i andre registre
 
 
                         FilNavn = "c:\Scans\" + "Str-" + Str(SvejseNummer) + "-" + Str(ScanNummer) + "-" + Str(StrengNummer) + ".txt"
@@ -688,8 +689,8 @@ Start:
                         ScanID.ErrorNo = 0
                         ScanID.Motion_Dist = 0
                         ScanID.Success = True
-                        'Form1.UpLoadPict()
-
+                        Form1.UpLoadPict()
+                        Fejlskan = 0
                     Else
                         ScanCnt = ScanCnt + 1
 
@@ -754,7 +755,15 @@ Start:
                     End If
 
                     If errVal > 0 Then
-                        SetInit_X(444, errVal + 600)
+                        FilNavn = "c:\Scans\" + "Str-" + Str(SvejseNummer) + "-" + Str(ScanNummer) + "-" + Str(StrengNummer) + "FejlScan.txt"
+                        skrivTxtfil(FilNavn)
+                        Form1.UpLoadPict()
+                        Fejlskan = Fejlskan + 1
+                        ScanCnt = ScanCnt - 1
+                        If Fejlskan > 2 Then
+                            SetInit_X(444, errVal + 600)
+                        End If
+
                     Else
                         SetInit_X(444, 0)
                     End If
@@ -899,8 +908,9 @@ Start:
             skrivTxtfil(FilNavn)
 
             XZ_Offset(ScanNummer, StrengNummer)
-            If Form1.Analyze_Func("top") = True Then
+            If Form1.Analyze_Func("full") = True Then
                 SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
+                SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
             End If
 
 
@@ -1149,7 +1159,7 @@ errhandler:
         ' henter de første X og Z værdier i registrene
         Dim Org_Z_Val1 As Double = GetIniHeights(ScanNummer + 370)
         ' find højden af svøbet ca. 5mm fra kanten af scannerlinjen
-        Dim Act_Z_Val1 As Double = Laser(ActLine, 100).Z_Pos / 100
+        Dim Act_Z_Val1 As Double = Laser(100).Z_Pos / 100
         Dim TopLines(2) As LinesFound
 
 

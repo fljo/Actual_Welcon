@@ -390,34 +390,34 @@ ErrHandler:
         For loop2 = 0 To 20479 Step 16
             Array.Copy(ByteArr, loop2, ByteNr, 0, 16)
             If loop2 < 20480 Then
-                Laser(loop1, ValidMeas) = Convert(0, ByteNr)
-                If Laser(loop1, ValidMeas).PixWidth < ReflectVal.MinVal Then ReflectVal.MinVal = Laser(loop1, ValidMeas).PixWidth
-                If Laser(loop1, ValidMeas).PixWidth > ReflectVal.MaxVal Then ReflectVal.MaxVal = Laser(loop1, ValidMeas).PixWidth
-                If loop2 = 0 Then Chk_Val1 = Laser(loop1, ValidMeas).Z_Pos
-                If Math.Abs(Laser(loop1, ValidMeas).Z_Pos) > 15000 Then
+                Laser(ValidMeas) = Convert(0, ByteNr)
+                If Laser(ValidMeas).PixWidth < ReflectVal.MinVal Then ReflectVal.MinVal = Laser(ValidMeas).PixWidth
+                If Laser(ValidMeas).PixWidth > ReflectVal.MaxVal Then ReflectVal.MaxVal = Laser(ValidMeas).PixWidth
+                If loop2 = 0 Then Chk_Val1 = Laser(ValidMeas).Z_Pos
+                If Math.Abs(Laser(ValidMeas).Z_Pos) > 15000 Then
 
-                    If ReflectVal.MaxVal < Laser(loop1, ValidMeas).PixWidth Then
-                        ReflectVal.MaxVal = Laser(loop1, ValidMeas).PixWidth
+                    If ReflectVal.MaxVal < Laser(ValidMeas).PixWidth Then
+                        ReflectVal.MaxVal = Laser(ValidMeas).PixWidth
                     End If
-                    If ReflectVal.MinVal > Laser(loop1, ValidMeas).PixWidth Then
-                        ReflectVal.MinVal = Laser(loop1, ValidMeas).PixWidth
+                    If ReflectVal.MinVal > Laser(ValidMeas).PixWidth Then
+                        ReflectVal.MinVal = Laser(ValidMeas).PixWidth
                     End If
                     ' nedenstående holder øje med mindste Z-værdi i skanningen
                     If ValidMeas < 51 Then
-                        MinZ = MinZ + Laser(loop1, ValidMeas).Z_Pos
+                        MinZ = MinZ + Laser(ValidMeas).Z_Pos
                     End If
                     'If Laser(loop1, ValidMeas).Z_Pos < MinZ Then
                     'MinZ = Laser(loop1, ValidMeas).Z_Pos
                     'End If
 
-                    If Abs(Laser(loop1, ValidMeas).Z_Pos - Chk_Val1) < (500 + (Reflekt_Cnt * 10)) Then   ' hvis der er store reflektioner
-                        Chk_Val1 = Laser(loop1, ValidMeas).Z_Pos
+                    If Abs(Laser(ValidMeas).Z_Pos - Chk_Val1) < (500 + (Reflekt_Cnt * 10)) Then   ' hvis der er store reflektioner
+                        Chk_Val1 = Laser(ValidMeas).Z_Pos
                         ValidMeas = ValidMeas + 1
                         Reflekt_Cnt = 0
                     Else
                         Reflekt_Cnt = Reflekt_Cnt + 1
                         If Reflekt_Cnt > 25 Then
-                            Chk_Val1 = Laser(loop1, ValidMeas).Z_Pos
+                            Chk_Val1 = Laser(ValidMeas).Z_Pos
                         End If
                     End If
 

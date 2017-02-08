@@ -46,11 +46,13 @@ Partial Class Form1
         Me.Settings = New System.Windows.Forms.MenuStrip()
         Me.FileMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.Make_TxtFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MakeBINFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GetTextfileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ScanMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.InitScan = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetScan = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ScannerONToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ScannerOFFToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Center_Btn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.checkbox1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -90,9 +92,6 @@ Partial Class Form1
         Me.Label9 = New System.Windows.Forms.Label()
         Me.FugeHgt = New System.Windows.Forms.TextBox()
         Me.ScannerStatus = New System.Windows.Forms.Label()
-        Me.GetTextfileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ScannerONToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ScannerOFFToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Settings.SuspendLayout()
         CType(Me.BindingSource1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -151,86 +150,86 @@ Partial Class Form1
         '
         Me.SettingsMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ThresholdSelect, Me.ShutterTimeToolStripMenuItem, Me.RobotComm})
         Me.SettingsMenu.Name = "SettingsMenu"
-        Me.SettingsMenu.Size = New System.Drawing.Size(49, 20)
+        Me.SettingsMenu.Size = New System.Drawing.Size(61, 20)
         Me.SettingsMenu.Text = "Settings"
         '
         'ThresholdSelect
         '
         Me.ThresholdSelect.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Thres1, Me.Thres2, Me.Thres3, Me.Thres4, Me.Thres5, Me.Thres6, Me.ToolStripMenuItem4, Me.ToolStripMenuItem3, Me.ToolStripMenuItem1, Me.Thres7})
         Me.ThresholdSelect.Name = "ThresholdSelect"
-        Me.ThresholdSelect.Size = New System.Drawing.Size(130, 22)
+        Me.ThresholdSelect.Size = New System.Drawing.Size(155, 22)
         Me.ThresholdSelect.Text = "Scan Threshold"
         '
         'Thres1
         '
         Me.Thres1.Name = "Thres1"
-        Me.Thres1.Size = New System.Drawing.Size(90, 22)
+        Me.Thres1.Size = New System.Drawing.Size(100, 22)
         Me.Thres1.Text = "16"
         '
         'Thres2
         '
         Me.Thres2.Name = "Thres2"
-        Me.Thres2.Size = New System.Drawing.Size(90, 22)
+        Me.Thres2.Size = New System.Drawing.Size(100, 22)
         Me.Thres2.Text = "32"
         '
         'Thres3
         '
         Me.Thres3.Name = "Thres3"
-        Me.Thres3.Size = New System.Drawing.Size(90, 22)
+        Me.Thres3.Size = New System.Drawing.Size(100, 22)
         Me.Thres3.Text = "48"
         '
         'Thres4
         '
         Me.Thres4.Name = "Thres4"
-        Me.Thres4.Size = New System.Drawing.Size(90, 22)
+        Me.Thres4.Size = New System.Drawing.Size(100, 22)
         Me.Thres4.Text = "64"
         '
         'Thres5
         '
         Me.Thres5.Name = "Thres5"
-        Me.Thres5.Size = New System.Drawing.Size(90, 22)
+        Me.Thres5.Size = New System.Drawing.Size(100, 22)
         Me.Thres5.Text = "96"
         '
         'Thres6
         '
         Me.Thres6.Name = "Thres6"
-        Me.Thres6.Size = New System.Drawing.Size(90, 22)
+        Me.Thres6.Size = New System.Drawing.Size(100, 22)
         Me.Thres6.Text = "128"
         '
         'ToolStripMenuItem4
         '
         Me.ToolStripMenuItem4.Name = "ToolStripMenuItem4"
-        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(90, 22)
+        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(100, 22)
         Me.ToolStripMenuItem4.Text = "256"
         '
         'ToolStripMenuItem3
         '
         Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(90, 22)
+        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(100, 22)
         Me.ToolStripMenuItem3.Text = "512"
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(90, 22)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(100, 22)
         Me.ToolStripMenuItem1.Text = "1024"
         '
         'Thres7
         '
         Me.Thres7.Name = "Thres7"
-        Me.Thres7.Size = New System.Drawing.Size(90, 22)
+        Me.Thres7.Size = New System.Drawing.Size(100, 22)
         Me.Thres7.Text = "Auto"
         '
         'ShutterTimeToolStripMenuItem
         '
         Me.ShutterTimeToolStripMenuItem.Name = "ShutterTimeToolStripMenuItem"
-        Me.ShutterTimeToolStripMenuItem.Size = New System.Drawing.Size(130, 22)
+        Me.ShutterTimeToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
         Me.ShutterTimeToolStripMenuItem.Text = "Shutter time"
         '
         'RobotComm
         '
         Me.RobotComm.Name = "RobotComm"
-        Me.RobotComm.Size = New System.Drawing.Size(130, 22)
+        Me.RobotComm.Size = New System.Drawing.Size(155, 22)
         Me.RobotComm.Text = "Robot Comm"
         '
         'Settings
@@ -245,84 +244,96 @@ Partial Class Form1
         '
         'FileMenu
         '
-        Me.FileMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Make_TxtFile, Me.MakeBINFileToolStripMenuItem, Me.ExitToolStripMenuItem, Me.GetTextfileToolStripMenuItem})
+        Me.FileMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Make_TxtFile, Me.ExitToolStripMenuItem, Me.GetTextfileToolStripMenuItem})
         Me.FileMenu.Name = "FileMenu"
-        Me.FileMenu.Size = New System.Drawing.Size(34, 20)
+        Me.FileMenu.Size = New System.Drawing.Size(42, 20)
         Me.FileMenu.Text = "Files"
         '
         'Make_TxtFile
         '
         Me.Make_TxtFile.Name = "Make_TxtFile"
-        Me.Make_TxtFile.Size = New System.Drawing.Size(152, 22)
+        Me.Make_TxtFile.Size = New System.Drawing.Size(148, 22)
         Me.Make_TxtFile.Text = "Make Text File"
-        '
-        'MakeBINFileToolStripMenuItem
-        '
-        Me.MakeBINFileToolStripMenuItem.Name = "MakeBINFileToolStripMenuItem"
-        Me.MakeBINFileToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.MakeBINFileToolStripMenuItem.Text = "Make BIN File"
         '
         'ExitToolStripMenuItem
         '
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(148, 22)
         Me.ExitToolStripMenuItem.Text = "Exit"
+        '
+        'GetTextfileToolStripMenuItem
+        '
+        Me.GetTextfileToolStripMenuItem.Name = "GetTextfileToolStripMenuItem"
+        Me.GetTextfileToolStripMenuItem.Size = New System.Drawing.Size(148, 22)
+        Me.GetTextfileToolStripMenuItem.Text = "Get Textfile"
         '
         'ScanMenu
         '
         Me.ScanMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.InitScan, Me.GetScan, Me.ScannerONToolStripMenuItem, Me.ScannerOFFToolStripMenuItem})
         Me.ScanMenu.Name = "ScanMenu"
-        Me.ScanMenu.Size = New System.Drawing.Size(49, 20)
+        Me.ScanMenu.Size = New System.Drawing.Size(61, 20)
         Me.ScanMenu.Text = "Scanner"
         '
         'InitScan
         '
         Me.InitScan.Name = "InitScan"
-        Me.InitScan.Size = New System.Drawing.Size(136, 22)
+        Me.InitScan.Size = New System.Drawing.Size(162, 22)
         Me.InitScan.Text = "Initialize Scanner"
         '
         'GetScan
         '
         Me.GetScan.Name = "GetScan"
-        Me.GetScan.Size = New System.Drawing.Size(136, 22)
+        Me.GetScan.Size = New System.Drawing.Size(162, 22)
         Me.GetScan.Text = "Get Scan"
+        '
+        'ScannerONToolStripMenuItem
+        '
+        Me.ScannerONToolStripMenuItem.Name = "ScannerONToolStripMenuItem"
+        Me.ScannerONToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ScannerONToolStripMenuItem.Text = "Scanner ""ON"""
+        '
+        'ScannerOFFToolStripMenuItem
+        '
+        Me.ScannerOFFToolStripMenuItem.Name = "ScannerOFFToolStripMenuItem"
+        Me.ScannerOFFToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ScannerOFFToolStripMenuItem.Text = "Scanner ""OFF"""
         '
         'Center_Btn
         '
         Me.Center_Btn.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2, Me.Analyze_sel, Me.CenterView})
         Me.Center_Btn.Name = "Center_Btn"
-        Me.Center_Btn.Size = New System.Drawing.Size(37, 20)
+        Me.Center_Btn.Size = New System.Drawing.Size(44, 20)
         Me.Center_Btn.Text = "View"
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.checkbox1, Me.checkbox2})
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(119, 22)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(137, 22)
         Me.ToolStripMenuItem2.Text = "Invert View"
         '
         'checkbox1
         '
         Me.checkbox1.Name = "checkbox1"
-        Me.checkbox1.Size = New System.Drawing.Size(140, 22)
+        Me.checkbox1.Size = New System.Drawing.Size(171, 22)
         Me.checkbox1.Text = "Invert Horisontally"
         '
         'checkbox2
         '
         Me.checkbox2.Name = "checkbox2"
-        Me.checkbox2.Size = New System.Drawing.Size(140, 22)
+        Me.checkbox2.Size = New System.Drawing.Size(171, 22)
         Me.checkbox2.Text = "Invert Vertically"
         '
         'Analyze_sel
         '
         Me.Analyze_sel.Name = "Analyze_sel"
-        Me.Analyze_sel.Size = New System.Drawing.Size(119, 22)
+        Me.Analyze_sel.Size = New System.Drawing.Size(137, 22)
         Me.Analyze_sel.Text = "Analyze"
         '
         'CenterView
         '
         Me.CenterView.Name = "CenterView"
-        Me.CenterView.Size = New System.Drawing.Size(119, 22)
+        Me.CenterView.Size = New System.Drawing.Size(137, 22)
         Me.CenterView.Text = "Center View"
         '
         'Thresh_Lbl
@@ -504,7 +515,6 @@ Partial Class Form1
         Me.Button1.TabIndex = 77
         Me.Button1.Text = "get file"
         Me.Button1.UseVisualStyleBackColor = True
-        Me.Button1.Visible = False
         '
         'StatusBox1
         '
@@ -650,24 +660,6 @@ Partial Class Form1
         Me.ScannerStatus.TabIndex = 132
         Me.ScannerStatus.Text = "scanner"
         '
-        'GetTextfileToolStripMenuItem
-        '
-        Me.GetTextfileToolStripMenuItem.Name = "GetTextfileToolStripMenuItem"
-        Me.GetTextfileToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.GetTextfileToolStripMenuItem.Text = "Get Textfile"
-        '
-        'ScannerONToolStripMenuItem
-        '
-        Me.ScannerONToolStripMenuItem.Name = "ScannerONToolStripMenuItem"
-        Me.ScannerONToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.ScannerONToolStripMenuItem.Text = "Scanner ""ON"""
-        '
-        'ScannerOFFToolStripMenuItem
-        '
-        Me.ScannerOFFToolStripMenuItem.Name = "ScannerOFFToolStripMenuItem"
-        Me.ScannerOFFToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.ScannerOFFToolStripMenuItem.Text = "Scanner ""OFF"""
-        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -759,7 +751,6 @@ Partial Class Form1
     Friend WithEvents checkbox2 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents Analyze_sel As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents CenterView As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MakeBINFileToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem1 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents TextBox2 As System.Windows.Forms.TextBox
     Friend WithEvents TextBox3 As System.Windows.Forms.TextBox

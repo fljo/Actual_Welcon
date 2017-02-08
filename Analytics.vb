@@ -130,11 +130,11 @@ Public Module Analytics
             End If
 
             n = n + 1
-            X_Act = Laser(Linenr, LoopCnt).X_Pos / 100
-            Z_Act = Laser(Linenr, LoopCnt).Z_Pos / 100
+            X_Act = Laser(LoopCnt).X_Pos / 100
+            Z_Act = Laser(LoopCnt).Z_Pos / 100
 
             ' herunder beregnes antallet af punkter der skal kigges frem for at 'fejlen' er MaxError stor ved en vinkel på 35%
-            CheckOffs_X = Round((MaxError * Tan(35 * PI / 180)) / (Abs(Laser(Linenr, LoopCnt).X_Pos / 100 - Laser(Linenr, LoopCnt + (3 * Sign)).X_Pos / 100) / 3))
+            CheckOffs_X = Round((MaxError * Tan(35 * PI / 180)) / (Abs(Laser(LoopCnt).X_Pos / 100 - Laser(LoopCnt + (3 * Sign)).X_Pos / 100) / 3))
 
             ' her findes udgangsliningen for den videre analyse af den rette linje og hvornår den slutter
             ' beregningen bygger på lineær regression (least square method)
@@ -224,8 +224,8 @@ Public Module Analytics
                 ' der arbejdes hele tiden med et fast antal målinger [MinLineLgt] således at den første måling fratrækkes og den sidste lægges til.
                 ' således bliver der hele tiden sammenlignet med et kort linjestykke, da længere linjestykker har en større afvigelse på grund af svøbets radius.
 
-                X_Frem = Laser(Linenr, LoopCnt + (TestLgd * Sign)).X_Pos / 100
-                Z_Frem = Laser(Linenr, LoopCnt + (TestLgd * Sign)).Z_Pos / 100
+                X_Frem = Laser(LoopCnt + (TestLgd * Sign)).X_Pos / 100
+                Z_Frem = Laser(LoopCnt + (TestLgd * Sign)).Z_Pos / 100
 
 
                 If n < TestLgd Then
@@ -328,8 +328,8 @@ Public Module Analytics
                                 Zm_Sum1 = 0
                                 While loop1 <> LoopCnt
                                     lop1_Cnt = lop1_Cnt + 1
-                                    X_Tmp = Laser(Linenr, loop1).X_Pos / 100
-                                    Z_Tmp = Laser(Linenr, loop1).Z_Pos / 100
+                                    X_Tmp = Laser(loop1).X_Pos / 100
+                                    Z_Tmp = Laser(loop1).Z_Pos / 100
 
                                     X_Sum = X_Sum + X_Tmp       ' summen af X
                                     Z_Sum = Z_Sum + Z_Tmp       ' summen af Z
@@ -353,8 +353,8 @@ Public Module Analytics
                                 ' hvis punktet ligger udenfor både den lange og den korte linjes grænser, så er det nok bunden, med mindre der kommer en knast på linjen
                                 ' hvis der kommer en knast i fugen, så forsætter linjen nok nedenunder. det tjekker vi lige...
 
-                                X_Tmp = Laser(Linenr, LoopCnt + (10 * Sign)).X_Pos / 100
-                                Z_Tmp = Laser(Linenr, LoopCnt + (10 * Sign)).Z_Pos / 100
+                                X_Tmp = Laser(LoopCnt + (10 * Sign)).X_Pos / 100
+                                Z_Tmp = Laser(LoopCnt + (10 * Sign)).Z_Pos / 100
                                 Dist = (b1 * X_Tmp + b0 - Z_Tmp) / Math.Sqrt(b1 ^ 2 + 1)
                                 If Abs(Dist) > MaxError Then
                                     LoopEnd = True
@@ -374,21 +374,21 @@ Public Module Analytics
                 End If
 
             Else
-                Z_Error = (FL_b1 * Laser(Linenr, LoopCnt + (CheckOffs_X * Sign)).X_Pos / 100) + FL_b0
+                Z_Error = (FL_b1 * Laser(LoopCnt + (CheckOffs_X * Sign)).X_Pos / 100) + FL_b0
 
                 ' METODE 4 FINDER ENDEN AF EN LINJE DER ER [TestLgd] LANG OG HAR EN FEJL DER ER STØRRE END [MaxError]
-                If ((Laser(Linenr, LoopCnt).X_Pos / 100) > -13) And Sign = -1 Then
+                If ((Laser(LoopCnt).X_Pos / 100) > -13) And Sign = -1 Then
                     Dist = Dist
                 End If
-                CheckOffs_Z = Abs(Z_Error - Laser(Linenr, LoopCnt + (CheckOffs_X * Sign)).Z_Pos / 100)
+                CheckOffs_Z = Abs(Z_Error - Laser(LoopCnt + (CheckOffs_X * Sign)).Z_Pos / 100)
                 If n > TestLgd And (CheckOffs_Z > MaxError) Then
 
                     FindLinje.StartPkt.Nr = LoopCnt - (Sign * TestLgd)
-                    FindLinje.StartPkt.X = (Laser(Linenr, FindLinje.StartPkt.Nr).X_Pos / 100)
-                    FindLinje.StartPkt.Z = (Laser(Linenr, FindLinje.StartPkt.Nr).Z_Pos / 100)
+                    FindLinje.StartPkt.X = (Laser(FindLinje.StartPkt.Nr).X_Pos / 100)
+                    FindLinje.StartPkt.Z = (Laser(FindLinje.StartPkt.Nr).Z_Pos / 100)
 
-                    FindLinje.SlutPkt.X = (Laser(Linenr, LoopCnt - Sign).X_Pos / 100)         '+ (X_Error * Sign)
-                    FindLinje.SlutPkt.Z = (FL_b1 * Laser(Linenr, (LoopCnt - Sign)).X_Pos / 100) + FL_b0
+                    FindLinje.SlutPkt.X = (Laser(LoopCnt - Sign).X_Pos / 100)         '+ (X_Error * Sign)
+                    FindLinje.SlutPkt.Z = (FL_b1 * Laser((LoopCnt - Sign)).X_Pos / 100) + FL_b0
                     'FindLinje1.SlutPkt.Z = (Laser(Linenr, LoopCnt - Sign).Z_Pos / 100)      
                     FindLinje.SlutPkt.Nr = LoopCnt - Sign
                     FindLinje.a = FL_b1
@@ -409,16 +409,16 @@ Public Module Analytics
 
         If Line_Is_Straight = False Then
             FindLinje.StartPkt.Nr = Start1
-            FindLinje.StartPkt.X = (Laser(Linenr, Start1).X_Pos / 100)
-            FindLinje.StartPkt.Z = (Laser(Linenr, Start1).Z_Pos / 100)
+            FindLinje.StartPkt.X = (Laser(Start1).X_Pos / 100)
+            FindLinje.StartPkt.Z = (Laser(Start1).Z_Pos / 100)
         Else
             FindLinje.StartPkt.Nr = Start
-            FindLinje.StartPkt.X = (Laser(Linenr, Start).X_Pos / 100)
-            FindLinje.StartPkt.Z = (Laser(Linenr, Start).Z_Pos / 100)
+            FindLinje.StartPkt.X = (Laser(Start).X_Pos / 100)
+            FindLinje.StartPkt.Z = (Laser(Start).Z_Pos / 100)
         End If
 
-        FindLinje.SlutPkt.X = (Laser(Linenr, LoopCnt).X_Pos / 100)
-        FindLinje.SlutPkt.Z = (Laser(Linenr, LoopCnt).Z_Pos / 100)       ' b1 * (LaserArr( LoopCnt).X_Pos / 100) + b0
+        FindLinje.SlutPkt.X = (Laser(LoopCnt).X_Pos / 100)
+        FindLinje.SlutPkt.Z = (Laser(LoopCnt).Z_Pos / 100)       ' b1 * (LaserArr( LoopCnt).X_Pos / 100) + b0
         FindLinje.SlutPkt.Nr = LoopCnt
         FindLinje.a = b1
         FindLinje.b = b0
@@ -440,8 +440,8 @@ Public Module Analytics
         LoopCnt = SelLine.SlutPkt.Nr
 
         While LoopEnd = False
-            X_Act = Laser(1, LoopCnt).X_Pos / 100
-            Z_Act = Laser(1, LoopCnt).Z_Pos / 100
+            X_Act = Laser(LoopCnt).X_Pos / 100
+            Z_Act = Laser(LoopCnt).Z_Pos / 100
 
             'FORMEL: Dist = abs(ax + b - y) / (Math.Sqrt(a^2 + 1)
             Dist = Abs(b1 * X_Act + b0 - Z_Act) / Math.Sqrt(b1 ^ 2 + 1)        ' afstanden mellem det aktuelle punkt og det's X-værdi's repræsentation på den fundne linje
