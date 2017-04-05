@@ -710,17 +710,23 @@ ErrHandler:
 
     End Sub
 
-    Public Function Analyze_Func(AnaType As String) As Boolean
+    Public Function Analyze_Func(AnaType As String) As AnaResult
         'Dim antal As Integer
         Dim qq(4) As LineFunc
         Dim LinjePkt(10) As Coord
         Dim IntersectLines(3) As Coord
-        Analyze_Func = False
+        Analyze_Func.Success = False
+        Analyze_Func.ErrorNr = 0
         Dim FugeHgtVal As Double
         Dim FugeWdtVal As Double
 
         On Error GoTo errhandler
 
+        If ValidMeas < 1200 Then
+            Analyze_Func.ErrorNr = 1
+            Analyze_Func.Success = False
+            Return Analyze_Func
+        End If
 
         FoundLine(1) = FindLinje(1, Math.Round(ValidMeas * 2 / 3), 1, 1.0, 4, 5, 100)
         FoundLine(2) = FindLinje(ValidMeas, Math.Round(ValidMeas / 3), -1, 1.0, 4, 5, 100)
@@ -758,7 +764,7 @@ ErrHandler:
             FugeBundVinkel = FoundLine(5).Angle
             Display = Format(FugeBundVinkel, "###.0")
             Bundvinkel.Text = Display
-             FugeWdtVal = FoundLine(1).SlutPkt.X - FoundLine(2).SlutPkt.X
+            FugeWdtVal = FoundLine(1).SlutPkt.X - FoundLine(2).SlutPkt.X
             FugeHgtVal = FugeWdtVal / 2 / 0.7   ' den forventede fugehøjden ved en vinkel på 70 grader (2x35grader) (0.7 er invTan(35) 
 
             Dim PlotIntersect As Boolean = True
@@ -771,7 +777,9 @@ ErrHandler:
                 IntersectLines(3).Nr = FoundLine(3).SlutPkt.Nr
                 If IntersectLines(3).Success = False Then
                     PlotIntersect = False
-                    Return (False)
+                    Analyze_Func.ErrorNr = 2
+                    Analyze_Func.Success = False
+                    Return Analyze_Func
                 End If
 
             Else
@@ -783,7 +791,11 @@ ErrHandler:
 
             End If
             'Return False
-            If PlotIntersect = False Then Return False
+            If PlotIntersect = False Then
+                Analyze_Func.ErrorNr = 3
+                Analyze_Func.Success = False
+                Return Analyze_Func
+            End If
 
             FoundLine(1).SlutPkt = IntersectLines(1)
             FoundLine(3).StartPkt = IntersectLines(1)
@@ -825,12 +837,22 @@ ErrHandler:
             'Areal.Text = Str(Areal_Beregn)
 
             Scan_Chk()
-            Return (True)
+            Analyze_Func.ErrorNr = 0
+            Analyze_Func.Success = True
+            Return Analyze_Func
         Else
 
             ' hvis der ikke findes en fuge returneres med FALSE
-            If FoundLine(1).SlutPkt.Success = False Then Return False
-            If FoundLine(2).SlutPkt.Success = False Then Return False
+            If FoundLine(1).SlutPkt.Success = False Then
+                Analyze_Func.ErrorNr = 4
+                Analyze_Func.Success = False
+                Return Analyze_Func
+            End If
+            If FoundLine(2).SlutPkt.Success = False Then
+                Analyze_Func.ErrorNr = 5
+                Analyze_Func.Success = False
+                Return Analyze_Func
+            End If
 
             ' AnaType = "top"
             IntersectLines(1) = FoundLine(1).SlutPkt
@@ -856,12 +878,17 @@ ErrHandler:
             RobotVal(4).CartPos.Z = -IntersectLines(1).Z + RobotVal(1).CartPos.Z
             RobotVal(4).CartPos.Y = RobotVal(1).CartPos.Y
             Scan_Chk()
-            Return (True)
+            Analyze_Func.ErrorNr = 0
+            Analyze_Func.Success = True
+            Return Analyze_Func
         End If
 
 
 errhandler:
-        Return (False)
+
+        Analyze_Func.ErrorNr = 11
+        Analyze_Func.Success = False
+        Return Analyze_Func
 
     End Function
 
@@ -882,7 +909,6 @@ errhandler:
     Private Sub ToolStripMenuItem2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Make_TxtFile.Click
         Dim saveFileDialog1 As New SaveFileDialog()
         Dim name As String
-
 
         saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         saveFileDialog1.FilterIndex = 2

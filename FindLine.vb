@@ -349,6 +349,7 @@ Start:
 
 
     Public Function ScanID(ByVal Command As Integer) As Motion_Ctrl
+        Dim AnalyzeVal As AnaResult
         On Error GoTo ErrHandler
 
         Dim udgang(0) As Short
@@ -646,7 +647,8 @@ Start:
             ' -----------------
             If Robot_Moving = False Then
                 delay(300)
-                If Form1.Analyze_Func("full") = True Then
+                AnalyzeVal = Form1.Analyze_Func("full")
+                If AnalyzeVal.Success = True Then
                     ' Form1.UpLoadPict()
 
                     If ScanCnt > 2 Then     ' 3 successfull scan
@@ -769,6 +771,18 @@ Start:
                     End If
 
                 Else
+                    If AnalyzeVal.ErrorNr > 0 Then
+                        FilNavn = "c:\Scans\" + "Str-" + Str(SvejseNummer) + "-" + Str(ScanNummer) + "-" + Str(StrengNummer) + "FejlScan.txt"
+                        skrivTxtfil(FilNavn)
+                        Form1.UpLoadPict()
+                        Fejlskan = Fejlskan + 1
+                        ScanCnt = ScanCnt - 1
+                        If Fejlskan > 4 Then
+                            SetInit_X(444, 523) ' scannerfejl
+                        End If
+                    End If
+
+
                     ' hvis skanningen ikke er successful
                     ScanID.Task = 1                         ' Motion task
                     ScanID.ErrorNo = 0
@@ -778,186 +792,197 @@ Start:
 
                 End If
 
-            End If
-        End If
-
-
-        ' 6) beregn vinklen af emnet
-
-        If Command = 6 Then
-            LaserPower("ON")
-
-            Form1.ScannerStatus.Text = "Finder vinklen af emnet!"
-
-            ScanID.Task = 5
-            ScanID.Motion_Dir = 0
-            ScanID.ErrorNo = 0
-            ScanID.Motion_Dist = 0
-            Form1.TextBox2.Text = Format(A3, "####.0")
-            SetRealReg(7, A3)
-            ScanID.Success = False
-        End If
-
-
-        ' 7) Søg efter svejsefugen ved rotation
-
-        If Command = 7 Then
-            LaserPower("ON")
-
-            Form1.ScannerStatus.Text = "Søger fugen under rotation!"
-            '   ---------------
-
-            ScanID.Task = 5                         ' holder loop'et kørende
-            ScanID.ErrorNo = 0
-            ScanID.Motion_Dir = 0                   ' kør op i Z-retningen
-            ScanID.Motion_Dist = 0                  ' afstanden skal være ca. Scan_Distance [mm]
-            ScanID.Success = False
-            SetRealReg(8, ID_Point(1).Z)
-            SetRealReg(9, ID_Point(5).Z)
-            SetRealReg(10, ID_Point(3).Z)
-        End If      ' find midten af svejsefugen i X-retningen      
-
-
-        ' 8) angiv højden fra skanneren ned til røret - bruges til positionering af bommen
-        If Command = 8 Then
-            LaserPower("ON")
-
-
-            Form1.ScannerStatus.Text = "Viser højden ved bomplacering!"
-
-            If ValidMeas > 400 Then
-                If Surface_Zval < 400 Then
-                    ScanID.Task = 5                         ' holder loop'et kørende
-                    ScanID.ErrorNo = 0
-                    ScanID.Motion_Dir = 0                   ' 
-                    ScanID.Motion_Dist = 0                  ' 
-                    ScanID.Success = False
-
-                    SetRealReg(6, Surface_Zval)
                 End If
-            Else
-                SetRealReg(6, 500)
             End If
 
-        End If
 
-        ' 9) flyt tårnet til midten af svøbet
-        If Command = 9 Then
-            LaserPower("ON")
+            ' 6) beregn vinklen af emnet
 
-            Form1.ScannerStatus.Text = "Placerer tårnet!"
+            If Command = 6 Then
+                LaserPower("ON")
 
-            Z_Diff = (ID_Point(3).Z - ID_Point(1).Z)
-            ScanID.Task = 5                         ' holder loop'et kørende
-            ScanID.ErrorNo = 0
-            ScanID.Motion_Dir = 0                   ' kør op i Z-retningen
-            ScanID.Motion_Dist = 0                  ' afstanden skal være ca. Scan_Distance [mm]
-            ScanID.Success = False
-            SetRealReg(8, Z_Diff)
-        End If
+                Form1.ScannerStatus.Text = "Finder vinklen af emnet!"
+
+                ScanID.Task = 5
+                ScanID.Motion_Dir = 0
+                ScanID.ErrorNo = 0
+                ScanID.Motion_Dist = 0
+                Form1.TextBox2.Text = Format(A3, "####.0")
+                SetRealReg(7, A3)
+                ScanID.Success = False
+            End If
 
 
-        ' 10) find svejsepunkter
-        If Command = 10 Then
-            LaserPower("ON")
-            '   ---------------
-            Form1.ScannerStatus.Text = "Skanner svejsepunkt til fil!"
+            ' 7) Søg efter svejsefugen ved rotation
 
-            Form1.Scan_Groove()
-            FilNavn = "c:\Scans\" + "Str-" + Str(SvejseNummer) + "-" + Str(ScanNummer) + "-" + Str(StrengNummer) + ".txt"
-            skrivTxtfil(FilNavn)
+            If Command = 7 Then
+                LaserPower("ON")
 
-            ScanID.Task = 2
-            ScanID.Motion_Dir = 0
-            ScanID.ErrorNo = 0
-            ScanID.Motion_Dist = 0
-            ScanID.Success = True
+                Form1.ScannerStatus.Text = "Søger fugen under rotation!"
+                '   ---------------
 
-        End If
+                ScanID.Task = 5                         ' holder loop'et kørende
+                ScanID.ErrorNo = 0
+                ScanID.Motion_Dir = 0                   ' kør op i Z-retningen
+                ScanID.Motion_Dist = 0                  ' afstanden skal være ca. Scan_Distance [mm]
+                ScanID.Success = False
+                SetRealReg(8, ID_Point(1).Z)
+                SetRealReg(9, ID_Point(5).Z)
+                SetRealReg(10, ID_Point(3).Z)
+            End If      ' find midten af svejsefugen i X-retningen      
 
-        ' 11) find svejsepunkter
-        If Command = 11 Then
-            LaserPower("ON")
-            Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
 
-            Form1.Analyze_Func("full")
+            ' 8) angiv højden fra skanneren ned til røret - bruges til positionering af bommen
+            If Command = 8 Then
+                LaserPower("ON")
 
-            SetPosRegX(RobotVal(2).CartPos, 1)
-            SetPosRegX(RobotVal(3).CartPos, 2)
-            SetPosRegX(RobotVal(4).CartPos, 3)
-            SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
-            SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
 
-            ScanID.Task = 2
-            ScanID.Motion_Dir = 0
-            ScanID.ErrorNo = 0
-            ScanID.Motion_Dist = 0
-            ScanID.Success = True
+                Form1.ScannerStatus.Text = "Viser højden ved bomplacering!"
 
-        End If
+                If ValidMeas > 400 Then
+                    If Surface_Zval < 400 Then
+                        ScanID.Task = 5                         ' holder loop'et kørende
+                        ScanID.ErrorNo = 0
+                        ScanID.Motion_Dir = 0                   ' 
+                        ScanID.Motion_Dist = 0                  ' 
+                        ScanID.Success = False
 
-        ' 12) Tjek positionsoffset for svejsepunktet (fra f.eks. synkning af fugen)
-        If Command = 12 Then
-            LaserPower("ON")
-            Form1.ScannerStatus.Text = "Checker positionsoffset!"
+                        SetRealReg(6, Surface_Zval)
+                    End If
+                Else
+                    SetRealReg(6, 500)
+                End If
 
-            delay(500)
+            End If
 
-            Form1.Scan_Groove()
-            FilNavn = "c:\Scans\" + "Str-" + Str(SvejseNummer) + "-" + Str(ScanNummer) + "-" + Str(StrengNummer) + ".txt"
-            skrivTxtfil(FilNavn)
+            ' 9) flyt tårnet til midten af svøbet
+            If Command = 9 Then
+                LaserPower("ON")
 
-            XZ_Offset(ScanNummer, StrengNummer)
-            If Form1.Analyze_Func("full") = True Then
+                Form1.ScannerStatus.Text = "Placerer tårnet!"
+
+                Z_Diff = (ID_Point(3).Z - ID_Point(1).Z)
+                ScanID.Task = 5                         ' holder loop'et kørende
+                ScanID.ErrorNo = 0
+                ScanID.Motion_Dir = 0                   ' kør op i Z-retningen
+                ScanID.Motion_Dist = 0                  ' afstanden skal være ca. Scan_Distance [mm]
+                ScanID.Success = False
+                SetRealReg(8, Z_Diff)
+            End If
+
+
+            ' 10) find svejsepunkter
+            If Command = 10 Then
+                LaserPower("ON")
+                '   ---------------
+                Form1.ScannerStatus.Text = "Skanner svejsepunkt til fil!"
+
+                Form1.Scan_Groove()
+                FilNavn = "c:\Scans\" + "Str-" + Str(SvejseNummer) + "-" + Str(ScanNummer) + "-" + Str(StrengNummer) + ".txt"
+                skrivTxtfil(FilNavn)
+
+                ScanID.Task = 2
+                ScanID.Motion_Dir = 0
+                ScanID.ErrorNo = 0
+                ScanID.Motion_Dist = 0
+                ScanID.Success = True
+
+            End If
+
+            ' 11) find svejsepunkter
+            If Command = 11 Then
+                LaserPower("ON")
+                Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
+
+                Form1.Analyze_Func("full")
+
+                SetPosRegX(RobotVal(2).CartPos, 1)
+                SetPosRegX(RobotVal(3).CartPos, 2)
+                SetPosRegX(RobotVal(4).CartPos, 3)
                 SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
                 SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
+
+                ScanID.Task = 2
+                ScanID.Motion_Dir = 0
+                ScanID.ErrorNo = 0
+                ScanID.Motion_Dist = 0
+                ScanID.Success = True
+
+            End If
+
+            ' 12) Tjek positionsoffset for svejsepunktet (fra f.eks. synkning af fugen)
+            If Command = 12 Then
+                LaserPower("ON")
+                Form1.ScannerStatus.Text = "Checker positionsoffset!"
+
+                delay(500)
+
+                Form1.Scan_Groove()
+                FilNavn = "c:\Scans\" + "Str-" + Str(SvejseNummer) + "-" + Str(ScanNummer) + "-" + Str(StrengNummer) + ".txt"
+                skrivTxtfil(FilNavn)
+
+                XZ_Offset(ScanNummer, StrengNummer)
+            AnalyzeVal = Form1.Analyze_Func("full")
+            If AnalyzeVal.Success = True Then
+                SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
+                SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
+            Else
+                If AnalyzeVal.ErrorNr = 1 Then
+                    SetInit_X(444, 523) ' scannerfejl
+                End If
             End If
 
 
-            ScanID.Task = 2
-            ScanID.Motion_Dir = 0
-            ScanID.ErrorNo = 0
-            ScanID.Motion_Dist = 0
-            ScanID.Success = True
-            Form1.UpLoadPict()
-        End If
+                ScanID.Task = 2
+                ScanID.Motion_Dir = 0
+                ScanID.ErrorNo = 0
+                ScanID.Motion_Dist = 0
+                ScanID.Success = True
+                Form1.UpLoadPict()
+            End If
 
 
 
 
-        ' 13) find svejsepunkter
-        If Command = 13 Then
-            LaserPower("ON")
-            Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
+            ' 13) find svejsepunkter
+            If Command = 13 Then
+                LaserPower("ON")
+                Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
 
-            Form1.Analyze_Func("full")
+                Form1.Analyze_Func("full")
 
-            SetPosRegX(RobotVal(2).CartPos, 1)
-            SetPosRegX(RobotVal(3).CartPos, 2)
-            SetPosRegX(RobotVal(4).CartPos, 3)
-            SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
-            SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
+                SetPosRegX(RobotVal(2).CartPos, 1)
+                SetPosRegX(RobotVal(3).CartPos, 2)
+                SetPosRegX(RobotVal(4).CartPos, 3)
+                SetScanData(ScanNummer, MeasuredArea)       ' skriv Scanvolumen i register
+                SetScanData(ScanNummer + 14, FugeBundVinkel)       ' skriv FugeBundVinkel i register
 
-            ScanID.Task = 2
-            ScanID.Motion_Dir = 0
-            ScanID.ErrorNo = 0
-            ScanID.Motion_Dist = 0
-            ScanID.Success = True
+                ScanID.Task = 2
+                ScanID.Motion_Dir = 0
+                ScanID.ErrorNo = 0
+                ScanID.Motion_Dist = 0
+                ScanID.Success = True
 
-        End If
+            End If
 
-        ' 14) find svejsepunkter
-        If Command = 14 Then
+            ' 14) find svejsepunkter
+            If Command = 14 Then
 
-            LaserPower("ON")
-            Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
+                LaserPower("ON")
+                Form1.ScannerStatus.Text = "finder svejsepunkter og gemmer dem!"
 
-            If Form1.Analyze_Func("top") = True Then
+            'If Form1.Analyze_Func("top") = True Then
+            AnalyzeVal = Form1.Analyze_Func("top")
+            If AnalyzeVal.Success = True Then
 
                 SetPosRegX(RobotVal(2).CartPos, 1)
                 SetPosRegX(RobotVal(3).CartPos, 2)
                 SetPosRegX(RobotVal(4).CartPos, 3)
                 'SetScanData(ScanNummer, MeasuredArea)
+            Else
+                If AnalyzeVal.ErrorNr = 1 Then
+                    SetInit_X(444, 523) ' scannerfejl for få punkter
+                End If
             End If
 
             If ValidMeas > 400 Then
@@ -1155,6 +1180,7 @@ errhandler:
     Public Sub XZ_Offset(ByVal ScanNummer As Integer, ByVal Plads As Integer)
         Dim X_Offs As Double = 0
         Dim Z_Offs As Double = 0
+        Dim Opening As Double = 0
 
         ' henter de første X og Z værdier i registrene
         Dim Org_Z_Val1 As Double = GetIniHeights(ScanNummer + 370)
@@ -1184,16 +1210,17 @@ errhandler:
         XOffs_Arr(ScanNummer, 3) = GetInit_X(399 + (ScanNummer * 2))    ' det aktuelle scan's udgangsværdi lægges her så vi undgår at hente alle scan's hver gang
         XOffs_Arr(ScanNummer, 4) = GetInit_X(400 + (ScanNummer * 2))
         XOffs_Arr(ScanNummer, 5) = ((XOffs_Arr(ScanNummer, 1) - XOffs_Arr(ScanNummer, 3)) + (XOffs_Arr(ScanNummer, 2) - XOffs_Arr(ScanNummer, 4))) / 2  ' forskydning af fugen
-        XOffs_Arr(ScanNummer, 6) = (XOffs_Arr(ScanNummer, 3) - XOffs_Arr(ScanNummer, 4)) - (XOffs_Arr(ScanNummer, 1) - XOffs_Arr(ScanNummer, 2))      ' krympning af fugen
+        XOffs_Arr(ScanNummer, 6) = (XOffs_Arr(ScanNummer, 3) - XOffs_Arr(ScanNummer, 4)) - (XOffs_Arr(ScanNummer, 1) - XOffs_Arr(ScanNummer, 2))        ' krympning af fuen
         Form1.ErrLabel2.Text = Str(XOffs_Arr(ScanNummer, 5)) + "    " + Str(XOffs_Arr(ScanNummer, 6))
 
-        X_Offs = XOffs_Arr(ScanNummer, 5)
+        X_Offs = XOffs_Arr(ScanNummer, 5)   ' forskydning af fugen
+        Opening = TopLines(1).SlutPkt.X - TopLines(2).SlutPkt.X   ' krympning af fuen
 
         Dim Calc_Offset As xyzwprExt
 
-        Calc_Offset.X = X_Offs
-        Calc_Offset.Y = 0
-        Calc_Offset.Z = Z_Offs
+        Calc_Offset.X = X_Offs  ' sideforskydning
+        Calc_Offset.Y = Opening   ' krymp
+        Calc_Offset.Z = Z_Offs  ' højdeforskydning
         Calc_Offset.w = 0
         Calc_Offset.p = 0
         Calc_Offset.r = 0

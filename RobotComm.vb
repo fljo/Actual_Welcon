@@ -64,13 +64,13 @@ Module RobotComm
             mobjPosReg = .AddPosReg(FRRJIf.FRIF_DATA_TYPE.POSREG, 1, 1, 5)  ' 3 sidste cifre: group, StartIndex, EndIndex
             PosChk = .AddPosReg(FRRJIf.FRIF_DATA_TYPE.POSREG, 1, 101, 141)  ' 3 sidste cifre: group, StartIndex, EndIndex
             Init_X = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 401, 444)
-            IniHeights = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 371, 385)
+            IniHeights = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 371, 385)    ' her ligger højden af fugen
             mobjNumReg = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_INT, 1, 5)
             mobjNumReg2 = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 6, 14)
             mobjPosRegXyzwpr = .AddPosRegXyzwpr(FRRJIf.FRIF_DATA_TYPE.POSREG_XYZWPR, 1, 1, 10)
             FanucRegR = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_INT, 200, 219)
             FanucRegW = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_INT, 220, 239)
-            ScanData = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 261, 290)
+            ScanData = .AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 261, 290)  ' her ligger scan-volumen (261-275) og bundfugevinkel (276-290)
 
         End With
 
@@ -148,8 +148,6 @@ Errhandler:
             client.Close()
             newsock.[Stop]()
         End While
-
-
 
 
     End Sub
