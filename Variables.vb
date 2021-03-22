@@ -107,6 +107,12 @@
         Public EndPkt As Integer
     End Structure
 
+    Public Structure AnaResult
+        Public Success As Boolean
+        Public ErrorNr As Integer
+    End Structure
+
+
     Public Structure Angles_found
         Public Angle As Double
         Public Gns_Ang As Integer

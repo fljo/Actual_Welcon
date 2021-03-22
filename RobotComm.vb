@@ -354,6 +354,41 @@ Errhandler:
                         ArrayPos = ArrayPos + 1
                     End If
 
+                    ' tilføjet af Flemming
+                    '20,21th byte (svøb nummer)
+                    If i = 215 Then
+                        Dim bytes As Byte() = BitConverter.GetBytes(returnV)
+                        RobReadData(ArrayPos) = bytes(0)
+                        ArrayPos = ArrayPos + 1
+                        RobReadData(ArrayPos) = bytes(1)
+                        ArrayPos = ArrayPos + 1
+                    End If
+                    '20,21th byte (svøb nummer)
+                    If i = 216 Then
+                        Dim bytes As Byte() = BitConverter.GetBytes(returnV)
+                        RobReadData(ArrayPos) = bytes(0)
+                        ArrayPos = ArrayPos + 1
+                        RobReadData(ArrayPos) = bytes(1)
+                        ArrayPos = ArrayPos + 1
+                    End If
+                    '20,21th byte (svøb nummer)
+                    If i = 217 Then
+                        Dim bytes As Byte() = BitConverter.GetBytes(returnV)
+                        RobReadData(ArrayPos) = bytes(0)
+                        ArrayPos = ArrayPos + 1
+                        RobReadData(ArrayPos) = bytes(1)
+                        ArrayPos = ArrayPos + 1
+                    End If
+                    '20,21th byte (svøb nummer)
+                    If i = 218 Then
+                        Dim bytes As Byte() = BitConverter.GetBytes(returnV)
+                        RobReadData(ArrayPos) = bytes(0)
+                        ArrayPos = ArrayPos + 1
+                        RobReadData(ArrayPos) = bytes(1)
+                        ArrayPos = ArrayPos + 1
+                    End If
+
+
                 End If
             Next i
         End With
