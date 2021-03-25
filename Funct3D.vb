@@ -470,7 +470,7 @@ ErrHandler:
           PixWdtMin = ReflectVal.MinVal
 
         End If
-        lukmigind!
+
       Next i
       hexval(0) = Threshld_Val
       ThrsHld = BitConverter.ToInt32(hexval, 0)   ' global variabel ThrsHld tildeles ny værdi
